@@ -52,7 +52,6 @@ def login():
     ]
 
     response = post('https://craigs-school-3964.thinkific.com/users/sign_in',allow_redirects=False, headers=headers, data=data)
-    print(response.headers)
     return dict(response.cookies)
 headers = {
     'authority': 'craigs-school-3964.thinkific.com',
@@ -68,9 +67,7 @@ headers = {
 }
 
 cookies = login()
-print(cookies)
 import json
-exit()
 js = json.load(open('response.json'))
 if not os.path.exists('Advance SEO Course'):
     os.mkdir('Advance SEO Course')
@@ -86,7 +83,6 @@ for cont in js['contents']:
 for chap in chaps.values():
     if not os.path.exists(os.path.join('Advance SEO Course',slug.slug(chap))):
         os.mkdir(os.path.join('Advance SEO Course',slug.slug(chap)))
-    print(chap)
     for lesson in contents[chap]:
         r = get(f'https://craigs-school-3964.thinkific.com/api/course_player/v2/lessons/{lesson}',headers=headers,cookies=cookies)
         if r.json().get('videos'):
