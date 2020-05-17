@@ -1,3 +1,8 @@
+
+print("Script Doesn't Work")
+exit(0)
+
+
 EMAIL = 'ijazkhan095@gmail.com'
 PASSWORD = '#####'
 
@@ -25,6 +30,7 @@ def download_file(url,name):
 
 from requests import get,post
 from tqdm import tqdm
+from bs4 import BeautifulSoup as bs
 import json,os,slug
 def login():
 
@@ -45,12 +51,11 @@ def login():
 }
     data = [
       ('utf8', '✓'),
-      ('authenticity_token', 'FSWXtPnCr63xutzxpr9jx4Jp1W8GGP5xQqjwOJRUzZ5i50hJaM1fSKCOtPx6adXNgJO5d9YGQn9Ma093e94lqQ=='),
+      ('authenticity_token', bs(get(headers['referer']).text,'lxml').find('input',{'name':'authenticity_token'})['value']),
       ('user[email]', EMAIL),
       ('user[password]', PASSWORD),
       ('user[remember_me]', '1'),
     ]
-
     response = post('https://craigs-school-3964.thinkific.com/users/sign_in',allow_redirects=False, headers=headers, data=data)
     return dict(response.cookies)
 headers = {
@@ -83,6 +88,7 @@ for cont in js['contents']:
 for chap in chaps.values():
     if not os.path.exists(os.path.join('Advance SEO Course',slug.slug(chap))):
         os.mkdir(os.path.join('Advance SEO Course',slug.slug(chap)))
+    print("[+] Chapter:",chap)
     for lesson in contents[chap]:
         r = get(f'https://craigs-school-3964.thinkific.com/api/course_player/v2/lessons/{lesson}',headers=headers,cookies=cookies)
         if r.json().get('videos'):
